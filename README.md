@@ -1,32 +1,28 @@
-# React + TypeScript + Vite
+# Gastos
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+App web minimalista para registrar gastos diarios, semanales y mensuales. Sin backend ni base de datos: todo se guarda en el `localStorage` del navegador.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Vite + React + TypeScript
+- Tailwind CSS
+- Recharts
 
-## React Compiler
+## Uso
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev     # servidor de desarrollo
+npm run build   # build estático en dist/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+El build de `dist/` es estático y se puede publicar en Vercel, Netlify o GitHub Pages.
+
+## Funcionalidad
+
+- Registro de gastos con monto, categoría, fecha y nota.
+- Vistas diario / semanal / mensual con navegación entre periodos.
+- Total del periodo y desglose por categoría con gráfico.
+- Exportar a JSON o CSV e importar desde JSON para respaldo.
+
+Los datos viven solo en el navegador; al limpiar los datos del sitio se pierden, por lo que conviene exportar de vez en cuando.
