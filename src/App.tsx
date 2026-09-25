@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import { parseExpenses, useExpenses } from './storage'
-import { CATEGORIES, CATEGORY_COLORS, type Expense, type Period } from './types'
+import { parseExpenses, useCurrency, useExpenses } from './storage'
+import { CATEGORIES, CATEGORY_COLORS, CURRENCIES, type Expense, type Period } from './types'
 import {
   download,
   formatMoney,
@@ -21,6 +21,7 @@ const PERIODS: { id: Period; label: string }[] = [
 
 export default function App() {
   const { expenses, setExpenses } = useExpenses()
+  const { currency, setCurrency } = useCurrency()
   const [period, setPeriod] = useState<Period>('day')
   const [anchor, setAnchor] = useState<Date>(() => startOfPeriod(new Date(), 'day'))
   const [amount, setAmount] = useState('')
@@ -83,7 +84,19 @@ export default function App() {
     <div className="mx-auto max-w-3xl px-5 py-10">
       <header className="mb-8 flex items-baseline justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Gastos</h1>
-        <div className="flex gap-3 text-xs text-neutral-500">
+        <div className="flex items-center gap-3 text-xs text-neutral-500">
+          <select
+            className="rounded-md border border-neutral-200 bg-white px-2 py-1 text-xs outline-none focus:border-neutral-900"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            aria-label="Moneda"
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.label}
+              </option>
+            ))}
+          </select>
           <button
             className="hover:text-neutral-900"
             onClick={() => download('gastos.json', JSON.stringify(expenses, null, 2), 'application/json')}
@@ -181,7 +194,7 @@ export default function App() {
       <section className="mb-6 grid gap-4 sm:grid-cols-[1fr_260px]">
         <div className="rounded-2xl border border-neutral-200 bg-white p-5">
           <p className="text-xs uppercase tracking-wide text-neutral-400">Total del periodo</p>
-          <p className="mt-1 text-3xl font-semibold">{formatMoney(total)}</p>
+          <p className="mt-1 text-3xl font-semibold">{formatMoney(total, currency)}</p>
           <p className="mt-1 text-sm text-neutral-500">
             {visible.length} {visible.length === 1 ? 'gasto' : 'gastos'}
           </p>
@@ -193,7 +206,7 @@ export default function App() {
                   style={{ background: CATEGORY_COLORS[c.name] ?? '#64748b' }}
                 />
                 <span className="text-neutral-600">{c.name}</span>
-                <span className="ml-auto tabular-nums">{formatMoney(c.value)}</span>
+                <span className="ml-auto tabular-nums">{formatMoney(c.value, currency)}</span>
               </li>
             ))}
           </ul>
@@ -209,7 +222,7 @@ export default function App() {
                     <Cell key={c.name} fill={CATEGORY_COLORS[c.name] ?? '#64748b'} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => formatMoney(Number(v))} />
+                <Tooltip formatter={(v) => formatMoney(Number(v), currency)} />
               </PieChart>
             </ResponsiveContainer>
           )}
@@ -234,7 +247,7 @@ export default function App() {
                 {e.category} · {e.date}
               </p>
             </div>
-            <span className="ml-auto text-sm tabular-nums">{formatMoney(e.amount)}</span>
+            <span className="ml-auto text-sm tabular-nums">{formatMoney(e.amount, currency)}</span>
             <button
               className="text-xs text-neutral-300 opacity-0 transition group-hover:opacity-100 hover:text-red-500"
               onClick={() => setExpenses(expenses.filter((x) => x.id !== e.id))}
