@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Expense } from './types'
 
 const KEY = 'gastos.v1'
+const CURRENCY_KEY = 'gastos.currency'
 
 function parse(raw: string | null): Expense[] {
   if (!raw) return []
@@ -33,6 +34,18 @@ export function useExpenses() {
   }, [expenses])
 
   return { expenses, setExpenses }
+}
+
+export function useCurrency() {
+  const [currency, setCurrency] = useState<string>(
+    () => localStorage.getItem(CURRENCY_KEY) ?? 'COP',
+  )
+
+  useEffect(() => {
+    localStorage.setItem(CURRENCY_KEY, currency)
+  }, [currency])
+
+  return { currency, setCurrency }
 }
 
 export function parseExpenses(raw: string): Expense[] {

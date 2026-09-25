@@ -8,6 +8,18 @@ export type Expense = {
 
 export type Period = 'day' | 'week' | 'month'
 
+export const CURRENCIES = [
+  { code: 'COP', label: 'COP $' },
+  { code: 'USD', label: 'USD $' },
+  { code: 'EUR', label: 'EUR €' },
+  { code: 'MXN', label: 'MXN $' },
+  { code: 'ARS', label: 'ARS $' },
+  { code: 'CLP', label: 'CLP $' },
+  { code: 'PEN', label: 'PEN S/' },
+  { code: 'BRL', label: 'BRL R$' },
+  { code: 'GBP', label: 'GBP £' },
+] as const
+
 export const CATEGORIES = [
   'Comida',
   'Transporte',

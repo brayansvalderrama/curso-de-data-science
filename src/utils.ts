@@ -39,11 +39,15 @@ export function inPeriod(expense: Expense, anchor: Date, period: Period): boolea
   return value >= startOfPeriod(anchor, period).getTime() && value < endOfPeriod(anchor, period).getTime()
 }
 
-export function formatMoney(value: number): string {
-  return new Intl.NumberFormat('es-CO', {
+const ZERO_DECIMAL = new Set(['COP', 'CLP', 'JPY', 'KRW', 'PYG', 'VND'])
+
+export function formatMoney(value: number, currency: string): string {
+  const digits = ZERO_DECIMAL.has(currency) ? 0 : 2
+  return new Intl.NumberFormat('es', {
     style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0,
+    currency,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   }).format(value)
 }
 
